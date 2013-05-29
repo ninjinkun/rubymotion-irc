@@ -74,6 +74,14 @@ HTML
     renderMessages(messages)
   end
 
+  def composeBarViewDidPressButton(composeBarView)
+      @irc.join_channel(@channel)
+      @irc.send_channel(@channel, composeBarView.text)
+      composeBarView.resignFirstResponder
+      composeBarView.text = nil
+  end
+
+  # handle keyboard layout
   def keyboardWillToggle(notification)
     userInfo = notification.userInfo
     duration = userInfo[UIKeyboardAnimationDurationUserInfoKey].floatValue
@@ -122,12 +130,6 @@ HTML
                         self.webView.scrollView.frame = newTextViewFrame
                         self.webView.scrollView.contentOffset = newTextViewContentOffset
         end,completion: nil)
-    end
-    def composeBarViewDidPressButton(composeBarView)
-      @irc.join_channel(@channel)
-      composeBarView.resignFirstResponder
-      @irc.send_channel(@channel, composeBarView.text)
-      composeBarView.text = nil
     end
 end
 
