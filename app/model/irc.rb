@@ -62,8 +62,8 @@ module IRC
       channel.send(message)
     end
 
-    def pong
-      @socket.writeData(Message.new(prefix: nil, command: 'PONG', params: []).toRaw, withTimeout: -1, tag: 0)
+    def pong(number)
+      @socket.writeData(Message.new(prefix: nil, command: 'PONG', params: [number]).toRaw, withTimeout: -1, tag: 0)
       @socket.readDataWithTimeout(-1, tag: 0);
     end
 
@@ -80,8 +80,9 @@ module IRC
       @buffer += data.nsstring
       @socket.readDataWithTimeout(-1, tag: 0);
       messages = @buffer.split(/\r\n/).map { |line| IRC::Message.parse(line) }
-      if messages.find { |message| message.command == 'PING' }
-        pong
+      if pong_message = messages.find { |message| message.command == 'PING' }
+        number = pong_message.params[0]
+        pong(number)
       end
 
       if delegate.respond_to?('irc:didReceiveMessages:')
