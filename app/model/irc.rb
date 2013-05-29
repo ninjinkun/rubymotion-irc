@@ -4,14 +4,9 @@ module IRC
     PROPERTIES.each { |prop|
       attr_accessor prop
     }
-    RESPONSE_LENGTH = 1024
     def initialize(attributes = {})
-      attributes.each { |key, value|
-        self.send("#{key}=", value) if PROPERTIES.member? key
-      }
-
-      # @channel = attributes[:channel]
-      # @socket = attributes[:socket]
+      @channel = attributes[:channel]
+      @socket = attributes[:socket]
     end
 
     def join
@@ -24,17 +19,12 @@ module IRC
       @socket.writeData(message.toRaw, withTimeout: -1, tag: 0)
       @socket.readDataWithTimeout(-1, tag: 0);
     end
-    def pong
-      @socket.writeData(Message.new(prefix: nil, command: 'PONG', params: []).toRaw, withTimeout: -1, tag: 0)
-      @socket.readDataWithTimeout(-1, tag: 0);
-    end
     def topic(topic)
       @socket.writeData(Message.new(prefix: nil, command: 'TOPIC', params: [@channel, topic]).toRaw, withTimeout: -1, tag: 0)
       @socket.readDataWithTimeout(-1, tag: 0);
     end
   end
   class Connection
-    RESPONSE_LENGTH = 1024
     PROPERTIES = [:host, :port, :delegate, :name]
     PROPERTIES.each { |prop|
       attr_accessor prop
@@ -71,11 +61,11 @@ module IRC
       channel = @channels[channel_name]
       channel.send(message)
     end
-    def pong_channel(channel_name)
-      channel = @channels[channel_name]
-      channel.pong
-    end
 
+    def pong
+      @socket.writeData(Message.new(prefix: nil, command: 'PONG', params: []).toRaw, withTimeout: -1, tag: 0)
+      @socket.readDataWithTimeout(-1, tag: 0);
+    end
 
     # delegate methods
     def socket(socket, didConnectToHost: host, port: port)
@@ -90,10 +80,8 @@ module IRC
       @buffer += data.nsstring
       @socket.readDataWithTimeout(-1, tag: 0);
       messages = @buffer.split(/\r\n/).map { |line| IRC::Message.parse(line) }
-      if messages.grep do |message| 
-          message.command == 'PING' 
-        end
-        @irc.pong_channel(@channel) 
+      if messages.find { |message| message.command == 'PING' }
+        pong
       end
 
       if delegate.respond_to?('irc:didReceiveMessages:')
