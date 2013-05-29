@@ -41,6 +41,10 @@ module IRC
       @channels = {}
     end
 
+    def delegate=(sender)
+      @delegate = WeakRef.new(sender)
+    end
+
     def connect
       error_ptr = Pointer.new(:object)
       unless @socket.connectToHost(@host, onPort: @port, error: error_ptr)
