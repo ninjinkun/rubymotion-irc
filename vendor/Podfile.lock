@@ -1,0 +1,16 @@
+PODS:
+  - CocoaAsyncSocket (7.3.1)
+  - PHFComposeBarView (1.1.1):
+    - PHFDelegateChain (~> 1.0)
+  - PHFDelegateChain (1.0.1)
+
+DEPENDENCIES:
+  - CocoaAsyncSocket
+  - PHFComposeBarView
+
+SPEC CHECKSUMS:
+  CocoaAsyncSocket: 6e59036ecae1e93d6c78f5766149983ceac558ba
+  PHFComposeBarView: 510e96ec021f762ac00c407313a3b79dc409c213
+  PHFDelegateChain: 2c80836ba0c1b2ca4b5e6d3fa241343465e0eb70
+
+COCOAPODS: 0.18.1
