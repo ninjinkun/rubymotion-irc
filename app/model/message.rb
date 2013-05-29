@@ -1,3 +1,7 @@
+# Inspired by
+# https://gist.github.com/hakobe/5628019
+# https://github.com/Nerdmaster/ruby-irc-yail/blob/develop/lib/net/yail/message_parser.rb
+
 module IRC
   class Message
     PROPERTIES = [:nick, :user, :host, :prefix, :command, :params, :servername]
