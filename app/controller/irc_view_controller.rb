@@ -5,7 +5,7 @@ class IRCViewController < UIViewController
     @host = 'hubbard.freenode.net'
     @port = 6667
     @name = "rubymotionkun"
-    @channel = "#kyotojs"
+    @channel = "#ninjinkun"
     @irc = IRC::Connection.new(host: @host, port: @port, delegate: self, name: @name)
     @irc.connect()
     setupViews
